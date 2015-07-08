@@ -36,13 +36,10 @@ class ShortDate {
     }
 
     private void findError(int d, int m) {
-        if (getError(d, m)) {
-            return;
-        } else {
+        if (!getError(d, m)) {
             System.out.print("Error creating ");
             this.print();
         }
-
     }
 
     private int getNumberOfDays(int m) {
