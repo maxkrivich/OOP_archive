@@ -5,8 +5,7 @@ public class Vector {
     private double[] arr;
 
     public Vector() {
-        this.size = 0;
-        this.arr = new double[100];
+        this(100);
     }
 
     public Vector(int capacity) {
