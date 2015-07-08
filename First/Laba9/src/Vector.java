@@ -124,8 +124,7 @@ public class Vector {
     }
 
     Iterator getForwardIterator() {
-        Iterator i = new Inner();
-        return i;
+        return new Inner();
     }
 
     Iterator getBackwardIterator() {
@@ -149,8 +148,7 @@ public class Vector {
                 return (pos >= 0 ? true : false);
             }
         }
-        Iterator i = new LocInner();
-        return i;
+        return new LocInner();
     }
 
     public static void main(String[] args) {
