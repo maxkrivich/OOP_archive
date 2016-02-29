@@ -2,8 +2,9 @@ package consoleTasks;
 
 class NumMethods
 {
+    static final int MAX = (int) 1e10;
 
-    NumMethods()
+    private NumMethods()
     {
 
     }
@@ -15,7 +16,6 @@ class NumMethods
 
     public static double der(double x, double tol, Evaluatable f)
     {
-        final int MAX = 100;
         double h = 0.1;
         double one = meth(x, h, f);
         h = 0.1 * h;
@@ -43,7 +43,6 @@ class NumMethods
 
     public static double findRoot(double appr, double eps, Evaluatable f)
     {
-        final int MAX_ITER = 100;
         int k = 0;
         double delta = 1.0e-1 * appr;
         double old1 = appr, old2 = appr + delta;
@@ -56,7 +55,7 @@ class NumMethods
             error = Math.abs(res - old2);
             old1 = old2;
             old2 = res;
-            if (k > MAX_ITER)
+            if (k > MAX)
             {
                 System.out.print("Слишком много шагов вычислений");
                 System.exit(-1);
