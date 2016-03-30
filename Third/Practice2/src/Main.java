@@ -12,7 +12,7 @@ public class Main
     public static void main(String[] args) throws ClassNotFoundException
     {
         Scanner in = new Scanner(System.in);
-        System.out.println(taskOne("java.util.Scanner"));
+        System.out.println(taskOne(in.nextLine()));
     }
 
     public static String taskOne(final String className) throws ClassNotFoundException

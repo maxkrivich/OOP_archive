@@ -11,7 +11,7 @@ public class Check
     
     public Check()
     {
-        this(1, 1);
+        this(0, 0);
     }
     
     public Check(int x, int y)

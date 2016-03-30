@@ -1,6 +1,15 @@
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.StringTokenizer;
+
 /**
  *
  * @author maxkrivich
@@ -21,6 +30,7 @@ public final class TaskTwo
             put(double.class, Double.class);
         }
     };
+    final static File f = new File("object.dat");
 
     public static Constructor[] getConstructors(Class c)
     {
@@ -62,24 +72,30 @@ public final class TaskTwo
         Object[] objcs = new Object[args.length];
         for (int i = 0, j = 0; i < args.length; i++)
         {
-            if(!args[i].isPrimitive())
-                throw new Exception("Что-то явно пошло не по плану");
-            boolean t = false;
-            Constructor cons[] = map.get(args[i]).getConstructors();
-            for (; j < cons.length; j++)
-                if (1 == cons[j].getParameterTypes().length && String.class == cons[j].getParameterTypes()[0])
-                {
-                    t = true;
-                    break;
-                }
-            if (t)
-            {
-                System.out.printf("Введите %s значение: ", args[i]);
-                objcs[i] = map.get(args[i]).getConstructors()[j].newInstance(in.nextLine());
-            } else
-                throw new Exception("Что-то явно пошло не по плану");
+            System.out.printf("Введите %s значение: ", args[i]);
+            objcs[i] = param(args[i], in.nextLine());
         }
         return objcs;
+    }
+
+    private static Object param(Class cls, String value) throws Exception
+    {
+        Object obj;
+        boolean t = false;
+        Constructor cons[] = map.get(cls).getConstructors();
+        int j = 0;
+        for (; j < cons.length; j++)
+            if (1 == cons[j].getParameterTypes().length && String.class == cons[j].getParameterTypes()[0])
+            {
+                t = true;
+                break;
+            }
+        if (t)
+        {
+            obj = map.get(cls).getConstructors()[j].newInstance(value);
+        } else
+            throw new Exception("Что-то явно пошло не по плану");
+        return obj;
     }
 
     public static void main(String[] args) throws Exception
@@ -96,7 +112,8 @@ public final class TaskTwo
         {
             n = in.nextInt();
         } while (n < 0 || n > con.length);
-        Check obj = (Check) newObject(con[n - 1]);
+        Object obj = newObject(con[n - 1]);
+        savaObject(obj);
         System.out.printf("\nСостояние объекта:\n%s\n", obj);
         System.out.printf("\nВызов метода...\n\tСписок методов:\n");
         Method met[] = getMethods(c);
@@ -110,5 +127,34 @@ public final class TaskTwo
         Object tmp = callMethod(met[n - 1], obj);
         System.out.println(tmp == null ? "" : tmp);
         System.out.printf("\nСостояние объекта:\n%s\n", obj);
+        obj = restoreObject();
+        System.out.printf("\nВосстановление объекта:\n%s\n", obj);
+        
+    }
+
+    public static void savaObject(Object obj) throws IOException, IllegalArgumentException, IllegalAccessException
+    {
+        Class cl = obj.getClass();
+        Field fs[] = cl.getDeclaredFields();
+        PrintWriter pw = new PrintWriter(new FileWriter(f), true);
+        pw.println(cl.getName());
+        for (Field ff : fs)
+            pw.printf("%s\t%s\n", ff.getName(), ff.get(obj));
+    }
+
+    public static Object restoreObject() throws Exception
+    {
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        String s = br.readLine();
+        Class cl = Class.forName(s);
+        //Field fs[] = cl.getDeclaredFields();
+        Object obj = newObject(getConstructors(cl)[0]);
+        while ((s = br.readLine()) != null)
+        {
+            StringTokenizer st = new StringTokenizer(s);
+            Field ff = cl.getDeclaredField(st.nextToken());
+            ff.set(obj, param(ff.getType(), st.nextToken()));
+        }
+        return obj;
     }
 }
