@@ -16,7 +16,7 @@ public class FreeQuestion implements Question {
 	}
 
 	public boolean getResult(String s) {
-		return (s.equals(getAnswer())) ? true : false;
+		return s.equals(getAnswer());
 	}
 
 	public void printQuestion() {
