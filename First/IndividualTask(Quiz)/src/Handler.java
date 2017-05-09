@@ -14,7 +14,7 @@ public class Handler {
 		assert (size < r.length);
 		r[size]=new Record(s, q.getResult(s));
 		v.add(q);
-		if (r[size].getUserBoolean() == true)
+		if (r[size].getUserBoolean())
 			Score.score++;
 		size++;
 	}
